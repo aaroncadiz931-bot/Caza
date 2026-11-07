@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6ecd9">
+    <title>Caza Peregrine | Package Pricing Editor</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="toolbar" aria-label="Poster controls">
+        <button class="toolbar-button settings-button" id="settings-button" type="button" aria-label="Open pricing configuration">
+          <span aria-hidden="true">⚙</span>
+          <span class="button-label">Configuration</span>
+        </button>
+        <div class="toolbar-right">
+          <label class="poster-select-label" for="poster-select">Poster</label>
+          <select id="poster-select" aria-label="Choose poster">
+            <option value="packages">6-Pax Packages</option>
+            <option value="weekend">Weekend Package</option>
+          </select>
+          <button class="toolbar-button download-button" id="download-button" type="button" aria-label="Download current poster">
+            <span aria-hidden="true">↓</span>
+            <span>Download</span>
+          </button>
+          <button class="toolbar-button preview-button" id="preview-button" type="button">
+            <span aria-hidden="true">◉</span>
+            <span id="preview-label">Preview</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="poster-shell" aria-label="Editable Caza Peregrine pricing poster">
+        <div class="poster" id="packages-poster">
+          <img class="poster-background" src="assets/images/background_6PaxPackages.png" alt="Caza Peregrine Luxury Villa 6-pax packages poster">
+          <div class="poster-fields packages-fields">
+            <div class="price-row weekend-base">
+              <span class="pax-value"><input data-setting="basePax" aria-label="Weekend base number of guests"><span>PAX</span></span>
+              <span class="money-value"><span>₱</span><input data-setting="weekendRate" aria-label="Weekend base rate"></span>
+            </div>
+            <div class="price-row weekend-additional">
+              <span class="pax-value"><span>ADD</span><input data-derived="additionalPax" aria-label="Weekend additional guests" readonly><span>PAX</span></span>
+              <span class="money-value"><span>₱</span><input data-setting="additionalRate" aria-label="Weekend additional guest rate"></span>
+            </div>
+            <div class="total-value weekend-total" aria-label="Weekend total price"></div>
+            <div class="price-row weekday-base">
+              <span class="pax-value"><input data-setting="basePax" aria-label="Weekday base number of guests"><span>PAX</span></span>
+              <span class="money-value"><span>₱</span><input data-setting="weekdayRate" aria-label="Weekday base rate"></span>
+            </div>
+            <div class="price-row weekday-additional">
+              <span class="pax-value"><span>ADD</span><input data-derived="additionalPax" aria-label="Weekday additional guests" readonly><span>PAX</span></span>
+              <span class="money-value"><span>₱</span><input data-setting="additionalRate" aria-label="Weekday additional guest rate"></span>
+            </div>
+            <div class="total-value weekday-total" aria-label="Weekday total price"></div>
+            <input class="deposit-percent" data-setting="depositPercent" aria-label="Downpayment percentage" inputmode="decimal">
+          </div>
+        </div>
+
+        <div class="poster is-hidden" id="weekend-poster">
+          <img class="poster-background" src="assets/images/background_weekendPackage.png" alt="Caza Peregrine Luxury Villa weekend package poster">
+          <div class="poster-fields weekend-fields">
+            <div class="weekend-base-pax">
+              <span class="pax-value"><input data-setting="basePax" aria-label="Weekend package base number of guests"><span>PAX</span></span>
+            </div>
+            <div class="weekend-base-rate money-value">
+              <span>₱</span><input data-setting="weekendRate" aria-label="Weekend package base rate">
+            </div>
+            <div class="weekend-add-pax">
+              <span class="pax-value"><span>ADD</span><input data-derived="additionalPax" aria-label="Weekend package additional guests" readonly><span>PAX</span></span>
+            </div>
+            <div class="weekend-add-rate money-value">
+              <span>₱</span><input data-setting="additionalRate" aria-label="Weekend package additional guest rate">
+            </div>
+            <div class="weekend-total-value"></div>
+            <div class="weekend-deposit-value"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="dialog-title">
+      <form method="dialog" class="dialog-content" id="settings-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">CAZA PEREGRINE · PRICING</p>
+            <h1 id="dialog-title">Package configuration</h1>
+          </div>
+          <button class="close-button" value="close" aria-label="Close configuration">×</button>
+        </div>
+        <p class="dialog-intro">Changes update both posters instantly. Prices are in Philippine pesos.</p>
+        <label class="setting-row">
+          <span><strong>Base number of pax</strong><small>Guests included in the base rate</small></span>
+          <input type="number" id="base-pax-setting" data-setting="basePax" min="1" max="6" step="1" required>
+        </label>
+        <label class="setting-row">
+          <span><strong>Number of additional pax</strong><small>Changing this keeps the package within 6 guests</small></span>
+          <input type="number" id="additional-pax-setting" data-setting="additionalPax" min="0" max="5" step="1" required>
+        </label>
+        <label class="setting-row">
+          <span><strong>Base rate – weekends</strong><small>Weekend package for the base guests</small></span>
+          <span class="setting-input"><span>₱</span><input type="number" id="weekend-rate-setting" data-setting="weekendRate" min="0" step="1" required></span>
+        </label>
+        <label class="setting-row">
+          <span><strong>Base rate – weekdays</strong><small>Weekday package for the base guests</small></span>
+          <span class="setting-input"><span>₱</span><input type="number" id="weekday-rate-setting" data-setting="weekdayRate" min="0" step="1" required></span>
+        </label>
+        <label class="setting-row">
+          <span><strong>Additional pax rate</strong><small>Rate for all guests above the base count</small></span>
+          <span class="setting-input"><span>₱</span><input type="number" id="additional-rate-setting" data-setting="additionalRate" min="0" step="1" required></span>
+        </label>
+        <label class="setting-row">
+          <span><strong>DP rate</strong><small>Down-payment percentage of the total</small></span>
+          <span class="setting-input"><input type="number" id="deposit-percent-setting" data-setting="depositPercent" min="0" max="99" step="1" required><span>%</span></span>
+        </label>
+        <div class="capacity-note"><span id="additional-count-note">4 additional guests</span> to reach the 6-pax capacity.</div>
+        <div class="dialog-actions">
+          <button class="reset-button" id="reset-button" type="button">Reset defaults</button>
+          <button class="done-button" value="close">Done</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,729 @@
+:root {
+  color-scheme: light;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #382012;
+  background: #f3eadb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 5%, rgba(255, 255, 255, 0.92), transparent 55%),
+    #f3eadb;
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+.app {
+  width: min(100% - 32px, 1100px);
+  margin: 0 auto;
+  padding: 18px 0 42px;
+}
+
+.toolbar {
+  position: sticky;
+  z-index: 5;
+  top: 10px;
+  min-height: 48px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.toolbar-button,
+#poster-select {
+  min-height: 42px;
+  border: 1px solid rgba(98, 56, 27, 0.2);
+  border-radius: 999px;
+  background: rgba(255, 252, 246, 0.92);
+  color: #563116;
+  box-shadow: 0 5px 16px rgba(67, 41, 22, 0.08);
+}
+
+.toolbar-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+.toolbar-button:hover,
+#poster-select:hover {
+  background: #fff;
+}
+
+.toolbar-button:active {
+  transform: translateY(1px);
+}
+
+.toolbar-button > span:first-child {
+  font-size: 17px;
+}
+
+.preview-button {
+  border-color: #70401f;
+  background: #70401f;
+  color: #fff8eb;
+}
+
+.download-button {
+  border-color: #70401f;
+  background: #fffaf1;
+  color: #70401f;
+}
+
+.preview-button:hover {
+  background: #593218;
+}
+
+.poster-select-label {
+  color: #76583e;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#poster-select {
+  padding: 0 34px 0 13px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.poster-shell {
+  width: min(100%, 790px);
+  margin: 0 auto;
+}
+
+.poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1536 / 2752;
+  overflow: hidden;
+  container-type: inline-size;
+  box-shadow: 0 18px 55px rgba(54, 35, 18, 0.2);
+}
+
+.poster.is-hidden {
+  display: none;
+}
+
+.poster-background,
+.poster-fields {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.poster-background {
+  display: block;
+  object-fit: fill;
+}
+
+.poster-fields {
+  pointer-events: none;
+}
+
+.price-row {
+  position: absolute;
+  left: 7.3%;
+  width: 38.7%;
+  height: 3.15%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1%;
+  color: #3e1c0c;
+}
+
+.price-row.weekend-base {
+  top: 43.7%;
+}
+
+.price-row.weekend-additional {
+  top: 48.5%;
+}
+
+.price-row.weekday-base {
+  left: 52.3%;
+  top: 43.7%;
+}
+
+.price-row.weekday-additional {
+  left: 52.3%;
+  top: 48.5%;
+}
+
+.pax-value,
+.money-value {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.pax-value {
+  gap: 0.10cqw;
+  font-size: 2.45cqw;
+  line-height: 1;
+}
+
+.price-row .pax-value {
+  position: absolute;
+  left: 9.2cqw;
+  width: 16.5cqw;
+  transform: translateY(2.0cqw) scaleX(0.78);
+  transform-origin: left center;
+  font-size: 2.9cqw;
+  font-family: "Arial Rounded MT", "Arial Rounded", Arial, sans-serif;
+  font-weight: normal;
+}
+
+.price-row.weekend-additional .pax-value,
+.price-row.weekday-additional .pax-value {
+  font-weight: 600;
+}
+
+.price-row.weekend-base .pax-value,
+.price-row.weekend-additional .pax-value {
+  left: 7.2cqw;
+}
+
+.price-row.weekday-base .pax-value,
+.price-row.weekday-additional .pax-value {
+  left: 10.0cqw;
+}
+
+.pax-value input {
+  flex: 0 0 0.9em;
+  width: 0.9em;
+  min-width: 0.9em;
+  font-family: "Goudy Old Style", Goudy, Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  text-align: center;
+}
+
+.price-row .pax-value > span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.money-value {
+  gap: 0.1em;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4.0cqw;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.price-row .money-value {
+  position: absolute;
+  right: 0;
+  width: 47%;
+  justify-content: flex-end;
+  transform: translateY(2cqw);
+}
+
+.price-row.weekday-base .money-value,
+.price-row.weekday-additional .money-value {
+  right: -3cqw;
+}
+
+.price-row .money-value.long-price {
+  font-size: 3.35cqw;
+}
+
+.price-row .money-value.extra-long-price {
+  font-size: 2.9cqw;
+}
+
+.money-value input {
+  width: 3.4em;
+  min-width: 0;
+  text-align: right;
+}
+
+.total-value {
+  position: absolute;
+  width: 31%;
+  height: 5.2%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #401b0c;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 6.3cqw;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.weekend-total {
+  top: 55.5%;
+  left: 11.3%;
+}
+
+.weekday-total {
+  top: 55.5%;
+  left: 59.3%;
+}
+
+.deposit-percent {
+  position: absolute;
+  top: 63.9%;
+  left: 54%;
+  width: 8%;
+  height: 2.2%;
+  gap: 0.35em;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 4.0cqw;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  white-space: nowrap;
+  text-align: center;
+  color: #fff6df;
+}
+
+.deposit-percent input {
+  width: 100%;
+  height: 100%;
+  background: #663614;
+  color: #fff6df;
+}
+
+.poster-fields input {
+  pointer-events: auto;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  box-shadow: none;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.poster-fields input::-webkit-outer-spin-button,
+.poster-fields input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+}
+
+.poster-fields input.deposit-percent {
+  border: 0;
+  background: transparent;
+  color: #fff6df;
+  font: 700 3.6cqw Georgia, "Times New Roman", serif;
+  letter-spacing: 0.025em;
+  text-align: center;
+}
+
+body:not(.preview-mode) .poster-fields input:hover,
+body:not(.preview-mode) .poster-fields input:focus {
+  border-color: rgba(108, 61, 30, 0.5);
+  background: rgba(255, 250, 239, 0.58);
+  box-shadow: 0 0 0 2px rgba(108, 61, 30, 0.08);
+}
+
+.weekend-fields {
+  color: #3e1c0c;
+}
+
+.weekend-base-pax,
+.weekend-add-pax {
+  position: absolute;
+  width: 29%;
+  height: 3.1%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekend-base-pax {
+  top: 41.1%;
+  left: 21%;
+}
+
+.weekend-add-pax {
+  top: 41.1%;
+  left: 63.5%;
+}
+
+.weekend-fields .pax-value {
+  gap: 0.12em;
+  font-size: 3.6cqw;
+  font-family: "Arial Rounded MT Bold", "Arial", sans-serif;
+  font-weight: 700;
+  transform: scaleX(0.9);
+  transform-origin: center;
+}
+
+.weekend-add-pax .pax-value {
+  font-weight: 600;
+}
+
+.weekend-fields .pax-value input {
+  flex-basis: 1em;
+  width: 1em;
+  min-width: 1em;
+}
+
+.weekend-base-rate,
+.weekend-add-rate {
+  position: absolute;
+  width: 29%;
+  height: 4.1%;
+  justify-content: center;
+  font-size: 6.1cqw;
+}
+
+.weekend-base-rate {
+  top: 43.6%;
+  left: 12%;
+}
+
+.weekend-add-rate {
+  top: 43.6%;
+  left: 59%;
+}
+
+.weekend-fields .money-value input {
+  width: 3.25em;
+  text-align: center;
+}
+
+.weekend-fields .money-value.long-price {
+  font-size: 5.1cqw;
+}
+
+.weekend-fields .money-value.extra-long-price {
+  font-size: 4.3cqw;
+}
+
+.weekend-total-value {
+  position: absolute;
+  top: 50.45%;
+  left: 21%;
+  width: 58%;
+  height: 5.5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff6e3;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 8.4cqw;
+  font-weight: 700;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.weekend-deposit-value {
+  position: absolute;
+  top: 59.45%;
+  left: 23%;
+  width: 54%;
+  height: 3.6%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #481e10;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 5.2cqw;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.preview-mode .toolbar {
+  position: fixed;
+  z-index: 5;
+  top: 12px;
+  right: 12px;
+  width: auto;
+  margin: 0;
+  justify-content: flex-end;
+}
+
+.preview-mode .settings-button,
+.preview-mode .poster-select-label,
+.preview-mode #poster-select {
+  display: none;
+}
+
+.preview-mode .app {
+  width: 100%;
+  padding: 0;
+}
+
+.preview-mode .poster-shell {
+  width: min(100%, 790px);
+}
+
+.preview-mode .poster {
+  box-shadow: none;
+}
+
+.settings-dialog {
+  width: min(470px, calc(100% - 28px));
+  max-height: calc(100% - 28px);
+  max-width: none;
+  overflow-y: auto;
+  padding: 0;
+  border: 1px solid rgba(90, 55, 30, 0.14);
+  border-radius: 20px;
+  background: #fffaf1;
+  color: #392315;
+  box-shadow: 0 28px 90px rgba(38, 24, 13, 0.28);
+}
+
+.settings-dialog::backdrop {
+  background: rgba(35, 23, 15, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-content {
+  padding: 26px;
+}
+
+.dialog-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eyebrow {
+  margin: 0 0 7px;
+  color: #9a6d3d;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+}
+
+.dialog-heading h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.close-button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: #f1e7d8;
+  color: #54331b;
+  cursor: pointer;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.dialog-intro {
+  margin: 12px 0 19px;
+  color: #806b56;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 0;
+  border-top: 1px solid #eee2d0;
+}
+
+.setting-row > span:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.setting-row strong {
+  font-size: 13px;
+}
+
+.setting-row small {
+  color: #927d67;
+  font-size: 11px;
+}
+
+.setting-row input {
+  width: 112px;
+  height: 39px;
+  padding: 0 10px;
+  border: 1px solid #dfcfb9;
+  border-radius: 9px;
+  background: #fffdf9;
+  color: #482b17;
+  text-align: right;
+}
+
+.setting-row input:focus {
+  border-color: #956335;
+  outline: 3px solid rgba(149, 99, 53, 0.14);
+}
+
+.setting-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #78522e;
+  font-weight: 700;
+}
+
+.setting-input input {
+  width: 106px;
+}
+
+.capacity-note {
+  margin: 8px 0 2px;
+  padding: 11px 12px;
+  border-radius: 9px;
+  background: #f4ecdf;
+  color: #806b56;
+  font-size: 12px;
+}
+
+.capacity-note span {
+  color: #5a351c;
+  font-weight: 700;
+}
+
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 21px;
+}
+
+.dialog-actions button {
+  min-height: 40px;
+  padding: 0 15px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.reset-button {
+  background: transparent;
+  color: #795b3e;
+}
+
+.done-button {
+  min-width: 90px;
+  background: #70401f;
+  color: #fff8eb;
+}
+
+.preview-mode .poster-fields input:not(.deposit-percent) {
+  border-color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.preview-mode .poster-fields input.deposit-percent {
+  background: transparent !important;
+}
+
+@media (max-width: 600px) {
+  .app {
+    width: 100%;
+    padding: 10px 0 24px;
+  }
+
+  .toolbar {
+    width: calc(100% - 20px);
+    min-height: 42px;
+    margin-bottom: 10px;
+    gap: 6px;
+  }
+
+  .toolbar-button {
+    min-height: 38px;
+    padding: 0 11px;
+    font-size: 12px;
+  }
+
+  .toolbar-button > span:first-child {
+    font-size: 15px;
+  }
+
+  .toolbar-right {
+    gap: 6px;
+  }
+
+  .poster-select-label {
+    display: none;
+  }
+
+  #poster-select {
+    min-height: 38px;
+    max-width: 134px;
+    padding-right: 25px;
+    padding-left: 9px;
+    font-size: 11px;
+  }
+
+  .poster-shell {
+    width: 100%;
+  }
+
+  .preview-mode .poster-shell {
+    width: 100%;
+  }
+
+  .dialog-content {
+    padding: 22px 19px;
+  }
+
+  .dialog-heading h1 {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 365px) {
+  .button-label {
+    display: none;
+  }
+
+  #poster-select {
+    max-width: 124px;
+  }
+}
