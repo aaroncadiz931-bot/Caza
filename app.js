@@ -132,105 +132,115 @@ function setSetting(key, rawValue) {
   }
 }
 
-function drawText(ctx, text, x, y, {
-  font,
-  color = "#3e1c0c",
-  align = "left",
-  baseline = "middle"
-}) {
-  ctx.font = font;
-  ctx.fillStyle = color;
-  ctx.textAlign = align;
-  ctx.textBaseline = baseline;
-  ctx.fillText(text, x, y);
-}
-
-function drawPaxLabel(ctx, x, y, count, additional, fontSize, align = "center", horizontalScale = 1) {
-  const labelWeight = additional ? 600 : 700;
-  const labelFont = `${labelWeight} ${fontSize}px "Arial Rounded MT Bold", Arial, sans-serif`;
-  const numberFont = `700 ${fontSize}px "Goudy Old Style", Goudy, Georgia, "Times New Roman", serif`;
-  const prefix = additional ? "ADD " : "";
-  const suffix = " PAX";
-  ctx.font = labelFont;
-  const prefixWidth = ctx.measureText(prefix).width;
-  const suffixWidth = ctx.measureText(suffix).width;
-  ctx.font = numberFont;
-  const numberWidth = ctx.measureText(String(count)).width;
-  const textWidth = prefixWidth + numberWidth + suffixWidth;
-  const startX = align === "center" ? x - textWidth * horizontalScale / 2 : x;
-  ctx.save();
-  ctx.translate(startX, y);
-  ctx.scale(horizontalScale, 1);
-  drawText(ctx, prefix, 0, 0, { font: labelFont, align: "left" });
-  drawText(ctx, String(count), prefixWidth, 0, { font: numberFont, align: "left" });
-  drawText(ctx, suffix, prefixWidth + numberWidth, 0, { font: labelFont, align: "left" });
-  ctx.restore();
-}
-
-function drawMoney(ctx, value, x, y, fontSize, align = "right", color = "#3e1c0c") {
-  drawText(ctx, `₱${formatted(value)}`, x, y, {
-    font: `700 ${fontSize}px Georgia, "Times New Roman", serif`,
-    align,
-    color
-  });
-}
-
 async function downloadPoster() {
+  const isSafari = /^((?!chrome|chromium|android|crios|fxios|edg|opr).)*safari/i.test(navigator.userAgent);
+  const safariPreview = isSafari ? window.open("about:blank", "_blank") : null;
   const isPackages = posterSelect.value === "packages";
-  const image = new Image();
-  image.src = isPackages
-    ? "assets/images/background_6PaxPackages.png"
-    : "assets/images/background_weekendPackage.png";
-  await image.decode();
+  const poster = document.querySelector(isPackages ? "#packages-poster" : "#weekend-poster");
+  const background = poster.querySelector(".poster-background");
+  const posterBounds = poster.getBoundingClientRect();
+  if (typeof background.decode === "function") {
+    await background.decode();
+  } else if (!background.complete) {
+    await new Promise((resolve, reject) => {
+      background.addEventListener("load", resolve, { once: true });
+      background.addEventListener("error", reject, { once: true });
+    });
+  }
 
   const canvas = document.createElement("canvas");
-  canvas.width = image.naturalWidth;
-  canvas.height = image.naturalHeight;
+  canvas.width = background.naturalWidth;
+  canvas.height = background.naturalHeight;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Could not create a canvas to export the poster.");
-  ctx.drawImage(image, 0, 0);
+  ctx.drawImage(background, 0, 0);
 
-  const w = canvas.width;
-  const h = canvas.height;
-  const totals = getTotals();
+  const scaleX = canvas.width / posterBounds.width;
+  const scaleY = canvas.height / posterBounds.height;
+  const exportTargets = poster.querySelectorAll(
+    ".poster-fields input, .poster-fields .pax-value > span, .poster-fields .money-value > span, " +
+    ".weekend-total, .weekday-total, .weekend-total-value, .weekend-deposit-value"
+  );
 
-  if (isPackages) {
-    const rows = [
-      { top: 0.437, left: 0.073, width: 0.387, paxLeft: 0.145, topRate: state.weekendRate },
-      { top: 0.485, left: 0.073, width: 0.387, paxLeft: 0.145, topRate: state.additionalRate, additional: true },
-      { top: 0.437, left: 0.523, width: 0.387, paxLeft: 0.073, topRate: state.weekdayRate },
-      { top: 0.485, left: 0.523, width: 0.387, paxLeft: 0.073, topRate: state.additionalRate, additional: true }
-    ];
+  exportTargets.forEach((element) => {
+    const text = element instanceof HTMLInputElement ? element.value : element.textContent;
+    if (!text || !text.trim()) return;
 
-    rows.forEach((row) => {
-      const rowX = row.left * w;
-      const rowY = row.top * h + 0.0112 * h;
-      const paxX = rowX + row.paxLeft * w;
-      drawPaxLabel(ctx, paxX, rowY, row.additional ? additionalPax() : state.basePax, row.additional, 0.027 * w, "left", 0.78);
-      const priceRight = rowX + row.width * w + (row.left > 0.5 ? 0.03 * w : 0);
-      drawMoney(ctx, row.topRate, priceRight, rowY, 0.0342 * w);
-    });
+    const bounds = element.getBoundingClientRect();
+    if (!bounds.width || !bounds.height) return;
+    const style = getComputedStyle(element);
+    const left = (bounds.left - posterBounds.left) * scaleX;
+    const top = (bounds.top - posterBounds.top) * scaleY;
+    const width = bounds.width * scaleX;
+    const height = bounds.height * scaleY;
+    const paxLabel = element.closest(".pax-value");
+    const paxTransform = paxLabel ? getComputedStyle(paxLabel).transform : "none";
+    const transformMatch = paxTransform.match(/^matrix\(([^,]+)/);
+    const horizontalScale = transformMatch ? Number(transformMatch[1]) : 1;
+    const centeredFlex = style.justifyContent === "center";
 
-    drawMoney(ctx, totals.weekend, 0.268 * w, 0.581 * h, 0.063 * w, "center");
-    drawMoney(ctx, totals.weekday, 0.748 * w, 0.581 * h, 0.063 * w, "center");
-    drawText(ctx, `${state.depositPercent}%`, 0.58 * w, 0.65 * h, {
-      font: `700 ${0.036 * w}px Georgia, "Times New Roman", serif`,
-      color: "#fff6df",
-      align: "center"
-    });
-  } else {
-    drawPaxLabel(ctx, 0.355 * w, 0.4265 * h, state.basePax, false, 0.036 * w, "center", 0.9);
-    drawPaxLabel(ctx, 0.78 * w, 0.4265 * h, additionalPax(), true, 0.036 * w, "center", 0.9);
-    drawMoney(ctx, state.weekendRate, 0.265 * w, 0.4635 * h, 0.061 * w, "center");
-    drawMoney(ctx, state.additionalRate, 0.735 * w, 0.4635 * h, 0.061 * w, "center");
-    drawMoney(ctx, totals.weekend, 0.5 * w, 0.542 * h, 0.084 * w, "center", "#fff6e3");
-    drawMoney(ctx, totals.weekend * state.depositPercent / 100, 0.5 * w, 0.6325 * h, 0.052 * w, "center");
+    ctx.save();
+    ctx.font = `${style.fontStyle} ${style.fontVariant} ${style.fontWeight} ${parseFloat(style.fontSize) * scaleY}px ${style.fontFamily}`;
+    ctx.fillStyle = style.color;
+    ctx.textBaseline = "middle";
+    ctx.textAlign = centeredFlex || style.textAlign === "center"
+      ? "center"
+      : style.textAlign === "right"
+        ? "right"
+        : "left";
+    const x = ctx.textAlign === "right"
+      ? left + width
+      : ctx.textAlign === "center"
+        ? left + width / 2
+        : left;
+    ctx.translate(x, top + height / 2);
+    ctx.scale(horizontalScale, 1);
+    ctx.fillText(text.trim(), 0, 0);
+    ctx.restore();
+  });
+
+  const blob = await new Promise((resolve, reject) => {
+    if (typeof canvas.toBlob !== "function") {
+      try {
+        const dataUrl = canvas.toDataURL("image/png");
+        if (safariPreview) {
+          safariPreview.location.href = dataUrl;
+        } else {
+          const fallbackLink = document.createElement("a");
+          fallbackLink.download = isPackages
+            ? "caza-peregrine-6-pax-packages.png"
+            : "caza-peregrine-weekend-package.png";
+          fallbackLink.href = dataUrl;
+          fallbackLink.click();
+        }
+        resolve(null);
+      } catch (error) {
+        reject(error);
+      }
+      return;
+    }
+    canvas.toBlob((result) => {
+      if (result) resolve(result);
+      else reject(new Error("The browser could not create the poster image."));
+    }, "image/png");
+  });
+  if (!blob) return;
+
+  const url = URL.createObjectURL(blob);
+  if (safariPreview) {
+    safariPreview.location.href = url;
+    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    return;
   }
 
   const link = document.createElement("a");
   link.download = isPackages ? "caza-peregrine-6-pax-packages.png" : "caza-peregrine-weekend-package.png";
-  link.href = canvas.toDataURL("image/png");
+  link.href = url;
+  link.style.display = "none";
+  document.body.append(link);
   link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
 document.querySelectorAll("[data-setting]").forEach((input) => {

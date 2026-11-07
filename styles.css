@@ -33,9 +33,6 @@ input {
 }
 
 .toolbar {
-  position: sticky;
-  z-index: 5;
-  top: 10px;
   min-height: 48px;
   margin: 0 auto 16px;
   display: flex;
@@ -467,13 +464,10 @@ body:not(.preview-mode) .poster-fields input:focus {
 }
 
 .preview-mode .toolbar {
-  position: fixed;
-  z-index: 5;
-  top: 12px;
-  right: 12px;
-  width: auto;
-  margin: 0;
-  justify-content: flex-end;
+  position: static;
+  width: min(100% - 32px, 1100px);
+  margin: 0 auto 16px;
+  padding-top: 12px;
 }
 
 .preview-mode .settings-button,
