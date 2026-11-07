@@ -59,6 +59,14 @@ function updateValueInputs() {
   });
   document.querySelectorAll('[data-derived="additionalPax"]').forEach((input) => {
     input.value = additionalPax();
+    const digits = String(additionalPax()).length;
+    const inputWidth = `${Math.max(0.9, digits * 0.65)}em`;
+    input.style.width = inputWidth;
+    input.style.minWidth = inputWidth;
+    input.style.flexBasis = inputWidth;
+    const defaultScale = input.closest(".weekend-fields") ? 0.9 : 0.78;
+    const scale = Math.max(0.3, defaultScale / (1 + (digits - 1) * 0.32));
+    input.parentElement.style.setProperty("--pax-scale", scale);
   });
 
   [
@@ -108,10 +116,8 @@ function setSetting(key, rawValue) {
 
   if (key === "basePax") {
     state.basePax = Math.min(CAPACITY, Math.max(1, Math.round(parsed)));
-    state.additionalPax = CAPACITY - state.basePax;
   } else if (key === "additionalPax") {
-    state.additionalPax = Math.min(CAPACITY - 1, Math.max(0, Math.round(parsed)));
-    state.basePax = CAPACITY - state.additionalPax;
+    state.additionalPax = Math.max(0, Math.round(parsed));
   } else if (key === "depositPercent") {
     state.depositPercent = Math.min(99, Math.max(0, parsed));
   } else {
