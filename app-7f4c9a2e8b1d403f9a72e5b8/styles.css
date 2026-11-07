@@ -148,6 +148,31 @@ input {
   pointer-events: none;
 }
 
+.package-title-mask {
+  position: absolute;
+  top: 17.4%;
+  left: 23%;
+  width: 54%;
+  height: 5.3%;
+  background: linear-gradient(180deg, #865321 0%, #754313 42%, #804a16 100%);
+  clip-path: polygon(3% 12%, 8% 7%, 18% 10%, 29% 4%, 39% 9%, 51% 3%, 62% 9%, 76% 5%, 88% 11%, 97% 5%, 95% 22%, 100% 34%, 96% 48%, 99% 61%, 94% 76%, 97% 91%, 83% 86%, 70% 95%, 58% 89%, 46% 97%, 34% 90%, 21% 96%, 10% 88%, 2% 94%, 5% 77%, 0 64%, 4% 49%, 1% 34%, 5% 23%);
+  pointer-events: none;
+}
+
+.poster-fields input.package-title {
+  position: absolute;
+  top: 18.15%;
+  left: 26%;
+  width: 48%;
+  height: 3.8%;
+  color: #fff3dc;
+  font-family: "Brush Script MT", "Segoe Script", cursive;
+  font-size: 5.8cqw;
+  font-style: italic;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(48, 25, 8, 0.3);
+}
+
 .price-row {
   position: absolute;
   left: 7.3%;
@@ -225,6 +250,12 @@ input {
   font-family: "Goudy Old Style", Goudy, Georgia, "Times New Roman", serif;
   font-weight: 700;
   text-align: center;
+  position: relative;
+  top: -0.08em;
+}
+
+.price-row .pax-value {
+  gap: 0.8cqw;
 }
 
 .price-row .pax-value > span {
@@ -371,6 +402,11 @@ body:not(.preview-mode) .poster-fields input:focus {
 .weekend-base-pax {
   top: 41.1%;
   left: 21%;
+}
+
+.weekend-base-pax .pax-value {
+  position: relative;
+  left: -3cqw;
 }
 
 .weekend-add-pax {

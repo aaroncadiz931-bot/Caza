@@ -17,7 +17,7 @@
         <div class="toolbar-right">
           <label class="poster-select-label" for="poster-select">Poster</label>
           <select id="poster-select" aria-label="Choose poster">
-            <option value="packages">6-Pax Packages</option>
+            <option value="packages">N Pax Package</option>
             <option value="weekend">Weekend Package</option>
           </select>
           <button class="toolbar-button download-button" id="download-button" type="button" aria-label="Download current poster">
@@ -35,6 +35,8 @@
         <div class="poster" id="packages-poster">
           <img class="poster-background" src="assets/images/background_6PaxPackages.png" alt="Caza Peregrine Luxury Villa 6-pax packages poster">
           <div class="poster-fields packages-fields">
+            <div class="package-title-mask" aria-hidden="true"></div>
+            <input class="package-title" type="text" aria-label="Editable package title" maxlength="32" autocomplete="off">
             <div class="price-row weekend-base">
               <span class="pax-value"><input data-setting="basePax" aria-label="Weekend base number of guests"><span>PAX</span></span>
               <span class="money-value"><span>₱</span><input data-setting="weekendRate" aria-label="Weekend base rate"></span>
@@ -91,7 +93,7 @@
         <p class="dialog-intro">Changes update both posters instantly. Prices are in Philippine pesos.</p>
         <label class="setting-row">
           <span><strong>Base number of pax</strong><small>Guests included in the base rate</small></span>
-          <input type="number" id="base-pax-setting" data-setting="basePax" min="1" max="6" step="1" required>
+          <input type="number" id="base-pax-setting" data-setting="basePax" min="1" max="99" step="1" required>
         </label>
         <label class="setting-row">
           <span><strong>Base rate – weekends</strong><small>Weekend package for the base guests</small></span>

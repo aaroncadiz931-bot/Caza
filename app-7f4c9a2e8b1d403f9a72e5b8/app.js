@@ -1,4 +1,4 @@
-const CAPACITY = 6;
+const MAX_BASE_PAX = 99;
 const DEFAULTS = {
   basePax: 2,
   additionalPax: 4,
@@ -16,6 +16,8 @@ const settingsButton = document.querySelector("#settings-button");
 const previewButton = document.querySelector("#preview-button");
 const previewLabel = document.querySelector("#preview-label");
 const downloadButton = document.querySelector("#download-button");
+const packageTitle = document.querySelector(".package-title");
+const packagesOption = posterSelect.querySelector('option[value="packages"]');
 
 const settingInputs = {
   basePax: document.querySelector("#base-pax-setting"),
@@ -41,9 +43,23 @@ function getTotals() {
   };
 }
 
+function sizePaxInput(input, count) {
+  const digits = String(count).length;
+  const inputWidth = `${Math.max(0.9, digits * 0.72)}em`;
+  input.style.width = inputWidth;
+  input.style.minWidth = inputWidth;
+  input.style.flexBasis = inputWidth;
+  input.style.fontSize = `${Math.max(0.58, 1 - (digits - 1) * 0.14)}em`;
+
+  const defaultScale = input.closest(".weekend-fields") ? 0.9 : 0.78;
+  const scale = Math.max(0.46, defaultScale / (1 + (digits - 1) * 0.14));
+  input.parentElement.style.setProperty("--pax-scale", scale);
+}
+
 function updateValueInputs() {
   document.querySelectorAll('.poster-fields [data-setting="basePax"]').forEach((input) => {
     if (input !== document.activeElement) input.value = state.basePax;
+    sizePaxInput(input, state.basePax);
   });
   document.querySelectorAll('.poster-fields [data-setting="weekendRate"]').forEach((input) => {
     if (input !== document.activeElement) input.value = formatted(state.weekendRate);
@@ -59,14 +75,7 @@ function updateValueInputs() {
   });
   document.querySelectorAll('[data-derived="additionalPax"]').forEach((input) => {
     input.value = additionalPax();
-    const digits = String(additionalPax()).length;
-    const inputWidth = `${Math.max(0.9, digits * 0.65)}em`;
-    input.style.width = inputWidth;
-    input.style.minWidth = inputWidth;
-    input.style.flexBasis = inputWidth;
-    const defaultScale = input.closest(".weekend-fields") ? 0.9 : 0.78;
-    const scale = Math.max(0.3, defaultScale / (1 + (digits - 1) * 0.32));
-    input.parentElement.style.setProperty("--pax-scale", scale);
+    sizePaxInput(input, additionalPax());
   });
 
   [
@@ -102,6 +111,11 @@ function updatePosters() {
   Object.entries(settingInputs).forEach(([key, input]) => {
     if (input !== document.activeElement) input.value = state[key];
   });
+  const packagePax = state.basePax + state.additionalPax;
+  if (!packageTitle.dataset.customized && packageTitle !== document.activeElement) {
+    packageTitle.value = `${packagePax} Pax Package`;
+  }
+  packagesOption.textContent = `${packagePax} Pax Package`;
   updateValueInputs();
 }
 
@@ -115,7 +129,7 @@ function setSetting(key, rawValue) {
   if (parsed === null) return;
 
   if (key === "basePax") {
-    state.basePax = Math.min(CAPACITY, Math.max(1, Math.round(parsed)));
+    state.basePax = Math.min(MAX_BASE_PAX, Math.max(1, Math.round(parsed)));
   } else if (key === "additionalPax") {
     state.additionalPax = Math.max(0, Math.round(parsed));
   } else if (key === "depositPercent") {
@@ -131,6 +145,11 @@ function setSetting(key, rawValue) {
     });
   }
 }
+
+packageTitle.addEventListener("input", () => {
+  packageTitle.dataset.customized = "true";
+  packagesOption.textContent = `${state.basePax + state.additionalPax} Pax Package`;
+});
 
 async function downloadPoster() {
   const isSafari = /^((?!chrome|chromium|android|crios|fxios|edg|opr).)*safari/i.test(navigator.userAgent);
@@ -157,6 +176,31 @@ async function downloadPoster() {
 
   const scaleX = canvas.width / posterBounds.width;
   const scaleY = canvas.height / posterBounds.height;
+  poster.querySelectorAll(".package-title-mask").forEach((mask) => {
+    const bounds = mask.getBoundingClientRect();
+    const maskStyle = getComputedStyle(mask);
+    const path = maskStyle.clipPath.match(/^polygon\((.*)\)$/);
+    if (!path) return;
+    const points = path[1].split(",").map((point) => {
+      const [xPercent, yPercent] = point.trim().split(/\s+/).map((value) => Number.parseFloat(value) / 100);
+      return {
+        x: (bounds.left - posterBounds.left + bounds.width * xPercent) * scaleX,
+        y: (bounds.top - posterBounds.top + bounds.height * yPercent) * scaleY
+      };
+    });
+    if (points.length < 3) return;
+    const gradient = ctx.createLinearGradient(0, bounds.top * scaleY, 0, bounds.bottom * scaleY);
+    gradient.addColorStop(0, "#865321");
+    gradient.addColorStop(0.42, "#754313");
+    gradient.addColorStop(1, "#804a16");
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    points.slice(1).forEach((point) => ctx.lineTo(point.x, point.y));
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+  });
+
   const exportTargets = poster.querySelectorAll(
     ".poster-fields input, .poster-fields .pax-value > span, .poster-fields .money-value > span, " +
     ".weekend-total, .weekday-total, .weekend-total-value, .weekend-deposit-value"
@@ -254,6 +298,7 @@ document.querySelectorAll("[data-derived]").forEach((input) => {
 
 document.querySelector("#reset-button").addEventListener("click", () => {
   Object.assign(state, DEFAULTS);
+  delete packageTitle.dataset.customized;
   updatePosters();
 });
 
