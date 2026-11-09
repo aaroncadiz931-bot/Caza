@@ -73,8 +73,8 @@ function updateValueInputs() {
   document.querySelectorAll('.poster-fields [data-setting="depositPercent"]').forEach((input) => {
     if (input !== document.activeElement) input.value = `${state.depositPercent}%`;
   });
-  document.querySelectorAll('[data-derived="additionalPax"]').forEach((input) => {
-    input.value = additionalPax();
+  document.querySelectorAll('.poster-fields [data-setting="additionalPax"]').forEach((input) => {
+    if (input !== document.activeElement) input.value = additionalPax();
     sizePaxInput(input, additionalPax());
   });
 
@@ -87,6 +87,10 @@ function updateValueInputs() {
     document.querySelectorAll(`.poster-fields [data-setting="${key}"]`).forEach((input) => {
       input.parentElement.classList.toggle("long-price", digits >= 5 && digits < 6);
       input.parentElement.classList.toggle("extra-long-price", digits >= 6);
+      input.parentElement.classList.toggle("ultra-long-price", digits >= 7);
+      input.parentElement.classList.toggle("mega-long-price", digits >= 8);
+      input.style.width = `${Math.max(3.4, formatted(value).length * 0.68)}em`;
+      input.style.flex = "0 0 auto";
     });
   });
 
@@ -94,8 +98,12 @@ function updateValueInputs() {
   const additionalRateDigits = String(Math.round(Number(state.additionalRate) || 0)).length;
   document.querySelector(".weekend-base-rate").classList.toggle("long-price", weekendRateDigits >= 5 && weekendRateDigits < 6);
   document.querySelector(".weekend-base-rate").classList.toggle("extra-long-price", weekendRateDigits >= 6);
+  document.querySelector(".weekend-base-rate").classList.toggle("ultra-long-price", weekendRateDigits >= 7);
+  document.querySelector(".weekend-base-rate").classList.toggle("mega-long-price", weekendRateDigits >= 8);
   document.querySelector(".weekend-add-rate").classList.toggle("long-price", additionalRateDigits >= 5 && additionalRateDigits < 6);
   document.querySelector(".weekend-add-rate").classList.toggle("extra-long-price", additionalRateDigits >= 6);
+  document.querySelector(".weekend-add-rate").classList.toggle("ultra-long-price", additionalRateDigits >= 7);
+  document.querySelector(".weekend-add-rate").classList.toggle("mega-long-price", additionalRateDigits >= 8);
 }
 
 function updatePosters() {
@@ -290,10 +298,6 @@ async function downloadPoster() {
 document.querySelectorAll("[data-setting]").forEach((input) => {
   input.addEventListener("input", () => setSetting(input.dataset.setting, input.value));
   input.addEventListener("blur", updateValueInputs);
-});
-
-document.querySelectorAll("[data-derived]").forEach((input) => {
-  input.addEventListener("input", updateValueInputs);
 });
 
 document.querySelector("#reset-button").addEventListener("click", () => {

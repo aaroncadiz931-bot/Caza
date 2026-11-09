@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#f6ecd9">
     <title>Caza Peregrine | Package Pricing Editor</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20261109-1">
   </head>
   <body>
     <main class="app">
@@ -38,20 +38,20 @@
             <div class="package-title-mask" aria-hidden="true"></div>
             <input class="package-title" type="text" aria-label="Editable package title" maxlength="32" autocomplete="off">
             <div class="price-row weekend-base">
-              <span class="pax-value"><input data-setting="basePax" aria-label="Weekend base number of guests"><span>PAX</span></span>
+              <span class="pax-value"><input type="number" min="1" max="99" step="1" inputmode="numeric" data-setting="basePax" aria-label="Weekend base number of guests"><span>PAX</span></span>
               <span class="money-value"><span>₱</span><input data-setting="weekendRate" aria-label="Weekend base rate"></span>
             </div>
             <div class="price-row weekend-additional">
-              <span class="pax-value"><span>ADD</span><input data-derived="additionalPax" aria-label="Weekend additional guests" readonly><span>PAX</span></span>
+              <span class="pax-value"><span>ADD</span><input type="number" min="0" step="1" inputmode="numeric" data-setting="additionalPax" aria-label="Weekend additional guests"><span>PAX</span></span>
               <span class="money-value"><span>₱</span><input data-setting="additionalRate" aria-label="Weekend additional guest rate"></span>
             </div>
             <div class="total-value weekend-total" aria-label="Weekend total price"></div>
             <div class="price-row weekday-base">
-              <span class="pax-value"><input data-setting="basePax" aria-label="Weekday base number of guests"><span>PAX</span></span>
+              <span class="pax-value"><input type="number" min="1" max="99" step="1" inputmode="numeric" data-setting="basePax" aria-label="Weekday base number of guests"><span>PAX</span></span>
               <span class="money-value"><span>₱</span><input data-setting="weekdayRate" aria-label="Weekday base rate"></span>
             </div>
             <div class="price-row weekday-additional">
-              <span class="pax-value"><span>ADD</span><input data-derived="additionalPax" aria-label="Weekday additional guests" readonly><span>PAX</span></span>
+              <span class="pax-value"><span>ADD</span><input type="number" min="0" step="1" inputmode="numeric" data-setting="additionalPax" aria-label="Weekday additional guests"><span>PAX</span></span>
               <span class="money-value"><span>₱</span><input data-setting="additionalRate" aria-label="Weekday additional guest rate"></span>
             </div>
             <div class="total-value weekday-total" aria-label="Weekday total price"></div>
@@ -63,13 +63,13 @@
           <img class="poster-background" src="assets/images/background_weekendPackage.png" alt="Caza Peregrine Luxury Villa weekend package poster">
           <div class="poster-fields weekend-fields">
             <div class="weekend-base-pax">
-              <span class="pax-value"><input data-setting="basePax" aria-label="Weekend package base number of guests"><span>PAX</span></span>
+              <span class="pax-value"><input type="number" min="1" max="99" step="1" inputmode="numeric" data-setting="basePax" aria-label="Weekend package base number of guests"><span>PAX</span></span>
             </div>
             <div class="weekend-base-rate money-value">
               <span>₱</span><input data-setting="weekendRate" aria-label="Weekend package base rate">
             </div>
             <div class="weekend-add-pax">
-              <span class="pax-value"><span>ADD</span><input data-derived="additionalPax" aria-label="Weekend package additional guests" readonly><span>PAX</span></span>
+              <span class="pax-value"><span>ADD</span><input type="number" min="0" step="1" inputmode="numeric" data-setting="additionalPax" aria-label="Weekend package additional guests"><span>PAX</span></span>
             </div>
             <div class="weekend-add-rate money-value">
               <span>₱</span><input data-setting="additionalRate" aria-label="Weekend package additional guest rate">
@@ -125,6 +125,6 @@
       </form>
     </dialog>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=20261109-3"></script>
   </body>
 </html>
